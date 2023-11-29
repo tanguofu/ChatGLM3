@@ -36,7 +36,7 @@ fmt_info "Start finetune.py at pwd:$(pwd)"
 pip3 install -r requirements.txt
 
 set -x
-torchrun --nnodes=$WORLD_SIZE --nproc_per_node=$NUM_GPUS  --rdzv-id=$MASTER_ADDR --rdzv-backend=c10d \
+torchrun --nnodes=$WORLD_SIZE  --nproc_per_node=$NUM_GPUS --max-restarts=3  --rdzv-id=$MASTER_ADDR --rdzv-backend=c10d --rdzv-endpoint=$MASTER_ADDR:$MASTER_PORT \
     finetune.py \
     --train_format multi-turn \
     --train_file $DATASET_PATH \
