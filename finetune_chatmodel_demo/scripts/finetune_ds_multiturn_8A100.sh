@@ -15,10 +15,10 @@ NUM_GPUS=$(nvidia-smi -L |wc -l)
 LR=1e-4
 
 MAX_SEQ_LEN=2048
-DEV_BATCH_SIZE=16
+DEV_BATCH_SIZE=4
 GRAD_ACCUMULARION_STEPS=1
 MAX_STEP=200
-SAVE_INTERVAL=50
+SAVE_INTERVAL=100
 
 DATESTR=`date +%Y%m%d-%H%M%S`
 RUN_NAME=tool_alpaca_ft
@@ -36,7 +36,7 @@ fmt_info "Start finetune.py at pwd:$(pwd)"
 pip3 install -r requirements.txt
 
 set -x
-torchrun --nnodes=$WORLD_SIZE  --nproc_per_node=$NUM_GPUS --max-restarts=3  --rdzv-id=$MASTER_ADDR --rdzv-backend=c10d --rdzv-endpoint=$MASTER_ADDR:$MASTER_PORT \
+torchrun --nnodes=$WORLD_SIZE  --nproc_per_node=$NUM_GPUS --max-restarts=1  --rdzv-id=$MASTER_ADDR --rdzv-backend=c10d --rdzv-endpoint=$MASTER_ADDR:$MASTER_PORT \
     finetune.py \
     --train_format multi-turn \
     --train_file $DATASET_PATH \
