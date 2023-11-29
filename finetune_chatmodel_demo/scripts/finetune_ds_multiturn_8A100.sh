@@ -50,4 +50,4 @@ torchrun --nnodes=$WORLD_SIZE  --nproc_per_node=$NUM_GPUS --max-restarts=1  --rd
     --logging_steps 1 \
     --save_steps $SAVE_INTERVAL \
     --fp16 \
-    --deepspeed configs/deepspeed.json 2>&1 | tee ${OUTPUT_DIR}/train.log
+    --deepspeed configs/deepspeed-stage2.json 2>&1 | tee ${OUTPUT_DIR}/train.log
