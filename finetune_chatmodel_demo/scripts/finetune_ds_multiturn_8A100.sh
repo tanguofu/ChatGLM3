@@ -29,10 +29,10 @@ DATESTR=$(date +%Y%m%d-%H%M%S)
 OUTPUT_DIR=/model/chatglm3/checkpoints/${JOB_NAME}/${DATESTR}-${DATA_NAME}-${LR}
 
 # clean empty dir
-find /model/chatglm3/checkpoints/${JOB_NAME} -type f -name "*events.out.tfevents*" -exec rm -f {} \;
-find /model/chatglm3/checkpoints/${JOB_NAME} -type d -empty -exec rmdir {} \;
-find /model/chatglm3/checkpoints/${JOB_NAME} -type d -empty -exec rmdir {} \;
-find /model/chatglm3/checkpoints/${JOB_NAME} -type d -empty -exec rmdir {} \;
+find /model/chatglm3/checkpoints/${JOB_NAME} -type f -name "*events.out.tfevents*" -exec rm -f {} \; || echo "clean"
+find /model/chatglm3/checkpoints/${JOB_NAME} -type d -empty -exec rmdir {} \; || echo "clean"
+find /model/chatglm3/checkpoints/${JOB_NAME} -type d -empty -exec rmdir {} \; || echo "clean"
+find /model/chatglm3/checkpoints/${JOB_NAME} -type d -empty -exec rmdir {} \; || echo "clean"
 
 # create debug
 mkdir -p $OUTPUT_DIR
