@@ -35,7 +35,7 @@ pip3 install -r requirements.txt
 
 set -x
 torchrun --nnodes=$WORLD_SIZE  --nproc_per_node=$NUM_GPUS \
-    -max-restarts=2  \
+    --max-restarts=2  \
     --rdzv-id=$MASTER_ADDR \
     --rdzv-backend=c10d \
     --rdzv-endpoint=$MASTER_ADDR:$MASTER_PORT \
