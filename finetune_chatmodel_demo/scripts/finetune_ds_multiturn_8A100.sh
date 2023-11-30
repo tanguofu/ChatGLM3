@@ -9,29 +9,29 @@ set -e
 # https://github.com/tanguofu/ChatGLM3/tree/main/finetune_chatmodel_demo
 
 # 1. support multi-turn
-
+JOB_NAME=${JOB_NAME:-"chatglm3-ft-multi-ds"}
 NUM_GPUS=$(nvidia-smi -L |wc -l)
 
 LR=1e-4
 
 MAX_SEQ_LEN=2048
-DEV_BATCH_SIZE=4
+DEV_BATCH_SIZE=8
 GRAD_ACCUMULARION_STEPS=1
 MAX_STEP=200
 SAVE_INTERVAL=100
 
 DATESTR=`date +%Y%m%d-%H%M%S`
-RUN_NAME=tool_alpaca_ft
 
+DATA_NAME=tool_alpaca
 # in cos
 DATASET_PATH=/model/chatglm3/ChatGLM3/finetune_demo/formatted_data/tool_alpaca.jsonl
 BASE_MODEL_PATH=/model/chatglm3/chatglm3-6b
 
-OUTPUT_DIR=/data/output/${RUN_NAME}-${DATESTR}-${LR}
+OUTPUT_DIR=/model/chatglm3/checkpoints/${JOB_NAME}/${DATESTR}-${DATA_NAME}-${LR}
 
 mkdir -p $OUTPUT_DIR
 
-fmt_info "Start finetune.py at pwd:$(pwd)"
+fmt_info "Start finetune.py at pwd:$(pwd) and save ckpts into $OUTPUT_DIR"
 
 pip3 install -r requirements.txt
 
@@ -50,4 +50,5 @@ torchrun --nnodes=$WORLD_SIZE  --nproc_per_node=$NUM_GPUS --max-restarts=1  --rd
     --logging_steps 1 \
     --save_steps $SAVE_INTERVAL \
     --fp16 \
-    --deepspeed configs/deepspeed-stage2.json 2>&1 | tee ${OUTPUT_DIR}/train.log
+    --deepspeed configs/deepspeed-stage2.json
+     2>&1 | tee ${OUTPUT_DIR}/train.log
