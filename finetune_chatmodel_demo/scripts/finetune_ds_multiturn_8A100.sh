@@ -12,31 +12,33 @@ set -e
 JOB_NAME=${JOB_NAME:-"chatglm3-ft-multi-ds"}
 NUM_GPUS=$(nvidia-smi -L |wc -l)
 
-LR=1e-4
+# params
+LR=${LR:-"1e-4"}
+MAX_SEQ_LEN=${MAX_SEQ_LEN:-"2048"}
+DEV_BATCH_SIZE=${DEV_BATCH_SIZE:-"4"}
+GRAD_ACCUMULARION_STEPS=${GRAD_ACCUMULARION_STEPS:-"1"}
+MAX_STEP=${MAX_STEP:-"1000"}
+SAVE_INTERVAL=${SAVE_INTERVAL:-"200"}
+LOG_STEP=${MAX_STEP:-"10"}
 
-MAX_SEQ_LEN=2048
-DEV_BATCH_SIZE=8
-GRAD_ACCUMULARION_STEPS=1
-MAX_STEP=200
-SAVE_INTERVAL=100
-
-DATESTR=`date +%Y%m%d-%H%M%S`
-
+# in cos buckert
 DATA_NAME=tool_alpaca
-# in cos
 DATASET_PATH=/model/chatglm3/ChatGLM3/finetune_demo/formatted_data/tool_alpaca.jsonl
 BASE_MODEL_PATH=/model/chatglm3/chatglm3-6b
-
+DATESTR=$(date +%Y%m%d-%H%M%S)
 OUTPUT_DIR=/model/chatglm3/checkpoints/${JOB_NAME}/${DATESTR}-${DATA_NAME}-${LR}
-
 mkdir -p $OUTPUT_DIR
 
-fmt_info "Start finetune.py at pwd:$(pwd) and save ckpts into $OUTPUT_DIR"
+fmt_info "Start $JOB_NAME finetune.py at pwd:$(pwd) and save ckpts into $OUTPUT_DIR"
 
 pip3 install -r requirements.txt
 
 set -x
-torchrun --nnodes=$WORLD_SIZE  --nproc_per_node=$NUM_GPUS --max-restarts=1  --rdzv-id=$MASTER_ADDR --rdzv-backend=c10d --rdzv-endpoint=$MASTER_ADDR:$MASTER_PORT \
+torchrun --nnodes=$WORLD_SIZE  --nproc_per_node=$NUM_GPUS \
+    -max-restarts=2  \
+    --rdzv-id=$MASTER_ADDR \
+    --rdzv-backend=c10d \
+    --rdzv-endpoint=$MASTER_ADDR:$MASTER_PORT \
     finetune.py \
     --train_format multi-turn \
     --train_file $DATASET_PATH \
@@ -47,7 +49,7 @@ torchrun --nnodes=$WORLD_SIZE  --nproc_per_node=$NUM_GPUS --max-restarts=1  --rd
     --per_device_train_batch_size $DEV_BATCH_SIZE \
     --gradient_accumulation_steps $GRAD_ACCUMULARION_STEPS \
     --max_steps $MAX_STEP \
-    --logging_steps 1 \
+    --logging_steps $LOG_STEP \
     --save_steps $SAVE_INTERVAL \
     --fp16 \
     --deepspeed configs/deepspeed-stage2.json
