@@ -21,7 +21,7 @@ MAX_STEP=${MAX_STEP:-"1000"}
 SAVE_INTERVAL=${SAVE_INTERVAL:-"200"}
 LOG_STEP=${LOG_STEP:-"10"}
 # save dir
-SAVE_DIR={SAVE_DIR:-"/data/checkpoints"}
+SAVE_DIR=${SAVE_DIR:-"/data/checkpoints"}
 
 # in cos buckert
 DATA_NAME=tool_alpaca
