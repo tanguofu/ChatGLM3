@@ -42,6 +42,7 @@ torchrun --nnodes=$WORLD_SIZE  --nproc_per_node=$NUM_GPUS \
     --rdzv-id=$MASTER_ADDR \
     --rdzv-backend=c10d \
     --rdzv-endpoint=$MASTER_ADDR:$MASTER_PORT \
+    --rdzv_conf timeout=1000 \
     finetune.py \
     --train_format multi-turn \
     --train_file $DATASET_PATH \
