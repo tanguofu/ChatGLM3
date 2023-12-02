@@ -20,6 +20,8 @@ GRAD_ACCUMULARION_STEPS=${GRAD_ACCUMULARION_STEPS:-"1"}
 MAX_STEP=${MAX_STEP:-"1000"}
 SAVE_INTERVAL=${SAVE_INTERVAL:-"200"}
 LOG_STEP=${LOG_STEP:-"10"}
+# save dir
+CKPTS_DIR={CKPTS_DIR:-"/data/checkpoints"}
 
 # in cos buckert
 DATA_NAME=tool_alpaca
@@ -27,11 +29,8 @@ DATASET_PATH=/model/chatglm3/ChatGLM3/finetune_demo/formatted_data/tool_alpaca.j
 BASE_MODEL_PATH=/model/chatglm3/chatglm3-6b
 DATESTR=$(date +%Y%m%d-%H%M%S)
 
-OUTPUT_DIR=/data/checkpoints/${JOB_NAME}/${DATESTR}-${DATA_NAME}-${LR}/Node-$INDEX
-
-# create debug
+OUTPUT_DIR=$CKPTS_DIR/${JOB_NAME}/${DATESTR}-${DATA_NAME}-${LR}/Node-$INDEX
 mkdir -p $OUTPUT_DIR
-
 
 fmt_info "Start $JOB_NAME finetune.py at pwd:$(pwd) and save ckpts into $OUTPUT_DIR"
 
