@@ -27,15 +27,7 @@ DATASET_PATH=/model/chatglm3/ChatGLM3/finetune_demo/formatted_data/tool_alpaca.j
 BASE_MODEL_PATH=/model/chatglm3/chatglm3-6b
 DATESTR=$(date +%Y%m%d-%H%M%S)
 
-OUTPUT_DIR=/model/chatglm3/checkpoints/${JOB_NAME}/${DATESTR}-${DATA_NAME}-${LR}/Node-$INDEX
-
-# master clean empty dir
-if [ "$INDEX" == "0" ]; then 
-  find /model/chatglm3/checkpoints/${JOB_NAME} -type f -name "*events.out.tfevents*" -exec rm -f {} \; || echo "clean"
-  find /model/chatglm3/checkpoints/${JOB_NAME} -type d -empty -exec rmdir {} \; || echo "clean"
-  find /model/chatglm3/checkpoints/${JOB_NAME} -type d -empty -exec rmdir {} \; || echo "clean"
-  find /model/chatglm3/checkpoints/${JOB_NAME} -type d -empty -exec rmdir {} \; || echo "clean"
-fi
+OUTPUT_DIR=/data/checkpoints/${JOB_NAME}/${DATESTR}-${DATA_NAME}-${LR}/Node-$INDEX
 
 # create debug
 mkdir -p $OUTPUT_DIR
